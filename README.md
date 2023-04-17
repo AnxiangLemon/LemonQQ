@@ -9,6 +9,6 @@ Protocol Robot Based on NTQQ
 
 ![1680791845855](image/README/1680791845855.png)
 
-## 联系
+## 群组
 
-TG:https://t.me/yin_xiao
+TG:https://t.me/LemonQQBot

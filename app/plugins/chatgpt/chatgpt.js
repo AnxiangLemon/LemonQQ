@@ -10,45 +10,45 @@ class ChatGPT {
         GPT_TIMEOUT: 60, // 单位：s
     }
     constructor(config) {
-        this.config = {...(this.defaultConfig), ...config};
+        this.config = { ...(this.defaultConfig), ...config };
         console.log('config: ' + JSON.stringify(this.config));
     }
 
-     qqGroupChat = (msgObj) => {
-         if (this.config.QQ_GROUP.indexOf(Number.parseInt(msgObj.fromgroup)) !== -1) {
-             let content = msgObj.content;
-             if (content === undefined) {
-                 return;
-             }
-             console.log('content ==> ' + content);
-             let atString = `[LQ:@${msgObj.selfid}]`;
-             if (content.startsWith(atString)) {
-                 content = content.substring(atString.length + 1, content.length).trim();
-                 console.log('prompt ==> ' + content)
-                 try {
-                     if (content.length > 1) {
-                         this.chat(content, (msg) => {
-                             let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, msg, false);
-                             console.log('QQ Send Result <== ', ret)
-                         })
-                     }
-                 } catch (e) {
-                     try {
-                         let message = e.message.toString();
-                         if (message.includes('Timeout')) {
-                             let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, '访问GPT超时', false);
-                             console.log('QQ Send Result <== ', ret)
-                         } else {
-                             let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, '访问GPT错误', false);
-                             console.log('QQ Send Result <== ', ret);
-                         }
-                     } catch (e) {
-                         console.error('error', e);
+    qqGroupChat = (msgObj) => {
+        if (this.config.QQ_GROUP.indexOf(Number.parseInt(msgObj.fromgroup)) !== -1) {
+            let content = msgObj.content;
+            if (content === undefined) {
+                return;
+            }
+            console.log('content ==> ' + content);
+            let atString = `[LQ:@${msgObj.selfid}]`;
+            if (content.startsWith(atString)) {
+                content = content.substring(atString.length + 1, content.length).trim();
+                console.log('prompt ==> ' + content)
+                try {
+                    if (content.length > 1) {
+                        this.chat(content, (msg) => {
+                            let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, msg, false);
+                            console.log('QQ Send Result <== ', ret)
+                        })
+                    }
+                } catch (e) {
+                    try {
+                        let message = e.message.toString();
+                        if (message.includes('Timeout')) {
+                            let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, '访问GPT超时', false);
+                            console.log('QQ Send Result <== ', ret)
+                        } else {
+                            let ret = LQ.SendGroupMessage(msgObj.selfid, msgObj.fromgroup, '访问GPT错误', false);
+                            console.log('QQ Send Result <== ', ret);
+                        }
+                    } catch (e) {
+                        console.error('error', e);
 
-                     }
-                 }
-             }
-         }
+                    }
+                }
+            }
+        }
     }
 
     chat = (content, fun) => {
@@ -66,7 +66,7 @@ class ChatGPT {
             ]
         });
         console.log('ChatGPT Request ==> ' + content);
-        const response = http.Post('https://api.openai.com/v1/chat/completions', headers, {}, body, this.config.GPT_TIMEOUT, this.config.PROXY_URL)
+        const response = http.post('https://api.openai.com/v1/chat/completions', headers, {}, body, this.config.GPT_TIMEOUT, this.config.PROXY_URL)
         let data = JSON.parse(response);
         if (data.error !== undefined) {
             console.error('ChatGPT Response <== ' + response)
